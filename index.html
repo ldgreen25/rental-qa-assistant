@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rental Assistant | Desirable Management</title>
+<style>
+:root{--ink:#202722;--green:#294c3a;--green2:#1f3b2d;--cream:#f7f4ed;--gold:#b99a62;--line:#e7e2d8;--muted:#6c746e}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--cream);color:var(--ink);min-height:100vh}
+.hero{max-width:880px;margin:0 auto;padding:70px 24px;text-align:center}.eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-weight:700}
+.hero h1{font-family:Georgia,serif;font-size:42px;margin:10px 0 14px}.hero p{max-width:620px;margin:auto;color:var(--muted);line-height:1.6}
+.launch{position:fixed;right:22px;bottom:22px;border:0;border-radius:999px;padding:15px 19px;background:var(--green);color:white;font-weight:700;font-size:14px;cursor:pointer;box-shadow:0 14px 36px #0003}
+.panel{position:fixed;right:22px;bottom:82px;width:min(400px,calc(100vw - 28px));height:min(625px,calc(100vh - 110px));background:#fff;border-radius:20px;box-shadow:0 20px 55px #0003;display:none;flex-direction:column;overflow:hidden;border:1px solid #ffffff66}
+.panel.open{display:flex}.head{background:var(--green);color:white;padding:20px 18px;display:flex;justify-content:space-between;align-items:start}
+.head h2{font-family:Georgia,serif;margin:0 0 5px;font-size:20px}.head p{margin:0;font-size:12px;opacity:.85}.close{border:0;background:none;color:white;font-size:25px;cursor:pointer}
+.messages{flex:1;overflow:auto;padding:15px;background:#faf9f6}.msg{max-width:86%;padding:11px 13px;border-radius:14px;margin:8px 0;font-size:14px;line-height:1.45}
+.bot{background:white;border:1px solid var(--line);border-bottom-left-radius:5px}.user{background:var(--green);color:white;margin-left:auto;border-bottom-right-radius:5px}
+.popular{padding:10px 13px;background:#faf9f6;border-top:1px solid var(--line)}.popular strong{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:0 3px 7px}
+.chip{border:1px solid var(--line);background:white;color:var(--green2);border-radius:999px;padding:8px 10px;margin:3px;font-size:12px;cursor:pointer}.chip:hover{border-color:var(--gold)}
+form{display:flex;gap:8px;padding:12px;background:white;border-top:1px solid var(--line)}input{flex:1;border:1px solid var(--line);border-radius:11px;padding:11px 12px;font-size:14px;outline:none}input:focus{border-color:var(--green)}
+.send{border:0;border-radius:11px;background:var(--green);color:white;padding:0 15px;font-weight:700;cursor:pointer}.fine{text-align:center;padding:0 12px 11px;color:#8a908c;font-size:10px;background:white}
+@media(max-width:520px){.panel{right:8px;left:8px;bottom:76px;width:auto;height:calc(100vh - 90px)}.launch{right:13px;bottom:13px}.hero h1{font-size:34px}}
+</style>
+</head>
+<body>
+<main class="hero">
+<div class="eyebrow">Desirable Management</div>
+<h1>Find your answer faster.</h1>
+<p>Use the rental assistant for common questions about applications, qualifications, pets, showings and available rentals.</p>
+</main>
+
+<button class="launch" id="launch">💬 Ask About Renting</button>
+
+<section class="panel" id="panel">
+<div class="head"><div><h2>Ask Desirable</h2><p>Rental Information Assistant</p></div><button class="close" id="close">×</button></div>
+<div class="messages" id="messages"></div>
+<div class="popular"><strong>Common questions</strong><div id="chips"></div></div>
+<form id="form"><input id="input" placeholder="Ask a rental question..." autocomplete="off"><button class="send">Send</button></form>
+<div class="fine">Answers are informational and do not constitute rental approval.</div>
+</section>
+
+<script>
+const data=[
+{label:"Application fee",keys:["application fee","fee to apply","cost to apply"],answer:"The current application fee is being confirmed by Desirable Management. This answer will be updated with the approved amount before launch."},
+{label:"Income requirements",keys:["income","salary","earn","income requirement"],answer:"The current income qualification requirement is being confirmed by Desirable Management."},
+{label:"Credit requirements",keys:["credit","credit score","fico"],answer:"The current credit requirements are being confirmed by Desirable Management."},
+{label:"Pet policy",keys:["pet","pets","dog","cat","animal"],answer:"Pet policies may vary by property. The approved pet policy, fees and restrictions will be added here before launch."},
+{label:"Housing vouchers",keys:["section 8","voucher","housing assistance","housing choice"],answer:"Desirable Management is confirming its current policy regarding housing vouchers and rental assistance."},
+{label:"Schedule a showing",keys:["showing","tour","view property","see property"],answer:"Showing instructions will be linked here so prospective tenants can quickly take the next step."},
+{label:"Available rentals",keys:["available","availability","vacancy","vacancies","homes for rent","rentals"],answer:"A direct link to Desirable Management's current available rentals will be added here."},
+{label:"Documents needed",keys:["documents","pay stubs","proof of income","identification","what do i need"],answer:"The approved list of application documents is being confirmed and will be added before launch."},
+{label:"Deposit / move-in costs",keys:["deposit","security deposit","move in","move-in","holding fee"],answer:"Deposit and move-in requirements are being confirmed and may vary by property."}
+];
+const popular=["Application fee","Income requirements","Credit requirements","Pet policy","Schedule a showing","Available rentals"];
+const panel=document.getElementById("panel"),messages=document.getElementById("messages"),inp=document.getElementById("input");
+function add(t,c){let d=document.createElement("div");d.className="msg "+c;d.textContent=t;messages.appendChild(d);messages.scrollTop=messages.scrollHeight}
+function findAnswer(q){q=q.toLowerCase();let best=null,score=0;for(const x of data){let s=0;for(const k of x.keys){if(q.includes(k))s+=3;else for(const w of k.split(" "))if(w.length>3&&q.includes(w))s++}if(s>score){score=s;best=x}}return best&&score>=2?best.answer:"I don't have an approved answer for that yet. Please contact Desirable Management directly so you receive the correct information."}
+function ask(q){add(q,"user");setTimeout(()=>add(findAnswer(q),"bot"),140)}
+document.getElementById("launch").onclick=()=>{panel.classList.add("open");if(!messages.children.length)add("Hi! I’m the Desirable Management rental assistant. I can help with common questions about renting. What would you like to know?","bot");setTimeout(()=>inp.focus(),100)}
+document.getElementById("close").onclick=()=>panel.classList.remove("open");
+document.getElementById("form").onsubmit=e=>{e.preventDefault();let q=inp.value.trim();if(q){inp.value="";ask(q)}}
+for(const name of popular){let b=document.createElement("button");b.className="chip";b.textContent=name;b.onclick=()=>ask(name);document.getElementById("chips").appendChild(b)}
+</script>
+</body>
+</html>
