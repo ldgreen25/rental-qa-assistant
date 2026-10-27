@@ -9,13 +9,16 @@
 *{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--cream);color:var(--ink);min-height:100vh}
 .hero{max-width:880px;margin:0 auto;padding:70px 24px;text-align:center}.eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-weight:700}
 .hero h1{font-family:Georgia,serif;font-size:42px;margin:10px 0 14px}.hero p{max-width:620px;margin:auto;color:var(--muted);line-height:1.6}
+.demo-tag{display:inline-block;margin-top:22px;padding:6px 12px;border:1px dashed var(--gold);border-radius:999px;font-size:12px;color:var(--green2);background:#fffdf7}
 .launch{position:fixed;right:22px;bottom:22px;border:0;border-radius:999px;padding:15px 19px;background:var(--green);color:white;font-weight:700;font-size:14px;cursor:pointer;box-shadow:0 14px 36px #0003}
 .panel{position:fixed;right:22px;bottom:82px;width:min(400px,calc(100vw - 28px));height:min(625px,calc(100vh - 110px));background:#fff;border-radius:20px;box-shadow:0 20px 55px #0003;display:none;flex-direction:column;overflow:hidden;border:1px solid #ffffff66}
 .panel.open{display:flex}.head{background:var(--green);color:white;padding:20px 18px;display:flex;justify-content:space-between;align-items:start}
 .head h2{font-family:Georgia,serif;margin:0 0 5px;font-size:20px}.head p{margin:0;font-size:12px;opacity:.85}.close{border:0;background:none;color:white;font-size:25px;cursor:pointer}
-.messages{flex:1;overflow:auto;padding:15px;background:#faf9f6}.msg{max-width:86%;padding:11px 13px;border-radius:14px;margin:8px 0;font-size:14px;line-height:1.45}
+.demo-bar{background:#f3ead8;color:#5b4a26;font-size:11px;text-align:center;padding:6px 10px;border-bottom:1px solid var(--line)}
+.messages{flex:1;overflow:auto;padding:15px;background:#faf9f6}.msg{max-width:86%;padding:11px 13px;border-radius:14px;margin:8px 0;font-size:14px;line-height:1.45;white-space:pre-line}
 .bot{background:white;border:1px solid var(--line);border-bottom-left-radius:5px}.user{background:var(--green);color:white;margin-left:auto;border-bottom-right-radius:5px}
-.popular{padding:10px 13px;background:#faf9f6;border-top:1px solid var(--line)}.popular strong{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:0 3px 7px}
+.msg a{display:inline-block;margin-top:8px;color:var(--green);font-weight:700;text-decoration:none;border-bottom:1px solid var(--gold)}
+.popular{padding:10px 13px;background:#faf9f6;border-top:1px solid var(--line);max-height:118px;overflow:auto}.popular strong{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:0 3px 7px}
 .chip{border:1px solid var(--line);background:white;color:var(--green2);border-radius:999px;padding:8px 10px;margin:3px;font-size:12px;cursor:pointer}.chip:hover{border-color:var(--gold)}
 form{display:flex;gap:8px;padding:12px;background:white;border-top:1px solid var(--line)}input{flex:1;border:1px solid var(--line);border-radius:11px;padding:11px 12px;font-size:14px;outline:none}input:focus{border-color:var(--green)}
 .send{border:0;border-radius:11px;background:var(--green);color:white;padding:0 15px;font-weight:700;cursor:pointer}.fine{text-align:center;padding:0 12px 11px;color:#8a908c;font-size:10px;background:white}
@@ -27,12 +30,14 @@ form{display:flex;gap:8px;padding:12px;background:white;border-top:1px solid var
 <div class="eyebrow">Desirable Management</div>
 <h1>Find your answer faster.</h1>
 <p>Use the rental assistant for common questions about applications, qualifications, pets, showings and available rentals.</p>
+<div class="demo-tag" id="demoTag">Demo version: sample answers for review</div>
 </main>
 
 <button class="launch" id="launch">💬 Ask About Renting</button>
 
 <section class="panel" id="panel">
-<div class="head"><div><h2>Ask Desirable</h2><p>Rental Information Assistant</p></div><button class="close" id="close">×</button></div>
+<div class="head"><div><h2>Ask Desirable</h2><p>Rental Information Assistant</p></div><button class="close" id="close" aria-label="Close">×</button></div>
+<div class="demo-bar" id="demoBar">Demo: sample answers, not final Desirable Management policy</div>
 <div class="messages" id="messages"></div>
 <div class="popular"><strong>Common questions</strong><div id="chips"></div></div>
 <form id="form"><input id="input" placeholder="Ask a rental question..." autocomplete="off"><button class="send">Send</button></form>
@@ -40,26 +45,87 @@ form{display:flex;gap:8px;padding:12px;background:white;border-top:1px solid var
 </section>
 
 <script>
+/* ---------------------------------------------------------------
+   DEMO MODE
+   The answers below are SAMPLE answers written for a demo, modeled
+   on typical Virginia property-management FAQs. Replace each one with
+   Desirable Management's approved wording, then set DEMO_MODE=false
+   to hide the demo labels.
+   Links marked href:"#" are placeholders for the real pages.
+---------------------------------------------------------------- */
+const DEMO_MODE=true;
+const OFFICE="(757) 555-0142";
+
 const data=[
-{label:"Application fee",keys:["application fee","fee to apply","cost to apply"],answer:"The current application fee is being confirmed by Desirable Management. This answer will be updated with the approved amount before launch."},
-{label:"Income requirements",keys:["income","salary","earn","income requirement"],answer:"The current income qualification requirement is being confirmed by Desirable Management."},
-{label:"Credit requirements",keys:["credit","credit score","fico"],answer:"The current credit requirements are being confirmed by Desirable Management."},
-{label:"Pet policy",keys:["pet","pets","dog","cat","animal"],answer:"Pet policies may vary by property. The approved pet policy, fees and restrictions will be added here before launch."},
-{label:"Housing vouchers",keys:["section 8","voucher","housing assistance","housing choice"],answer:"Desirable Management is confirming its current policy regarding housing vouchers and rental assistance."},
-{label:"Schedule a showing",keys:["showing","tour","view property","see property"],answer:"Showing instructions will be linked here so prospective tenants can quickly take the next step."},
-{label:"Available rentals",keys:["available","availability","vacancy","vacancies","homes for rent","rentals"],answer:"A direct link to Desirable Management's current available rentals will be added here."},
-{label:"Documents needed",keys:["documents","pay stubs","proof of income","identification","what do i need"],answer:"The approved list of application documents is being confirmed and will be added before launch."},
-{label:"Deposit / move-in costs",keys:["deposit","security deposit","move in","move-in","holding fee"],answer:"Deposit and move-in requirements are being confirmed and may vary by property."}
+{label:"How to apply",keys:["how to apply","how do i apply","apply","application","submit application","apply online"],
+ answer:"You can apply online from any listing by selecting \"Apply Now.\" Every adult 18 or older who will live in the home completes a separate application.\n\nOnce your application and documents are complete, most decisions are made within 2–3 business days.",
+ link:{text:"Start an application",href:"#"}},
+{label:"Application fee",keys:["application fee","fee to apply","cost to apply","apply fee","screening fee"],
+ answer:"The application fee is $50 per adult applicant. It covers your credit and background screening and is non-refundable once screening begins."},
+{label:"Documents needed",keys:["what do i need to apply","what do i need","documents","paperwork","pay stub","proof of income","identification","photo id","id"],
+ answer:"Please have these ready for each adult applicant:\n• A government-issued photo ID\n• Proof of income: your last two pay stubs, an offer letter, or a benefits or voucher award letter\n• Self-employed applicants: last two years of tax returns or three months of bank statements\n• Contact information for your current and previous landlords"},
+{label:"Approval time",keys:["how long approval","how long to hear","approval time","approved","decision","when will i know","processing time"],
+ answer:"Most applications are reviewed within 2–3 business days after everything is submitted. Missing documents or landlord references we can't reach are the most common causes of delay. We'll contact you by email or phone with a decision."},
+{label:"Income requirements",keys:["income requirement","income","salary","how much do i need to make","make","earn","wages"],
+ answer:"Total household income should be at least 3 times the monthly rent. Roommates and co-applicants can combine their income.\n\nIf you use a housing voucher or other rental assistance, we compare your income only to your share of the rent."},
+{label:"Credit requirements",keys:["credit requirement","credit score","credit","fico","bad credit","no credit","co signer","cosigner","guarantor"],
+ answer:"We look at your full credit history, not just a score. Applicants with a score of 600 or higher generally qualify. Lower or limited credit may still be approved with an additional deposit or a qualified co-signer.\n\nUnpaid balances owed to a previous landlord are reviewed closely."},
+{label:"Housing vouchers",keys:["section 8","voucher","housing choice","housing assistance","rental assistance","hcv"],
+ answer:"Yes, we welcome Housing Choice Vouchers (Section 8) and other forms of rental assistance. Applicants using assistance go through the same screening as every other applicant, and your assistance is counted toward the income requirement."},
+{label:"Pet policy",keys:["pet policy","pet","dog","cat","animal","pet fee","pet rent","breed"],
+ answer:"Most of our homes allow up to two pets with approval. Each approved pet has a one-time $300 non-refundable pet fee and $35 per month in pet rent. Breed and weight limits vary by home and are noted on each listing.\n\nService and assistance animals are not pets and are never charged pet fees. Ask us about submitting an accommodation request."},
+{label:"Deposit / move-in costs",keys:["security deposit","deposit","move in cost","move in","holding fee","upfront","first month"],
+ answer:"The security deposit is usually equal to one month's rent. Virginia law caps it at two months' rent.\n\nBefore you get your keys, you'll pay the security deposit and your first month's rent, prorated if you move in mid-month. Any approved pet fees are also due at move-in."},
+{label:"Schedule a showing",keys:["schedule a showing","showing","tour","view property","see property","see the house","walk through","visit"],
+ answer:"You can book an in-person showing from any listing using \"Schedule a Showing,\" or call our office. Showings are available 7 days a week. Please bring a photo ID.",
+ link:{text:"Schedule a showing",href:"#"}},
+{label:"Available rentals",keys:["available rentals","available","availability","vacancy","vacancies","homes for rent","listing","rentals","for rent"],
+ answer:"Our current homes are listed on our rentals page, which is updated daily. Each listing shows the rent, deposit, pet policy and available move-in date.",
+ link:{text:"View available rentals",href:"#"}},
+{label:"Rent amount & due date",keys:["how much is rent","rent price","monthly rent","rent","pay rent","due date","late fee","price"],
+ answer:"Rent varies by home and is shown on each listing. Rent is due on the 1st of each month. A late fee applies to payments received after the 5th. Current residents can pay online through the resident portal."},
+{label:"Lease length",keys:["lease length","how long is the lease","lease term","lease","month to month","short term","break lease"],
+ answer:"Our standard lease is 12 months. Some homes offer 6- or 18-month terms, which are noted on the listing. Ask us before you apply if you need a different term."},
+{label:"Renters insurance",keys:["renters insurance","renter insurance","insurance"],
+ answer:"Renters insurance is required for all residents. Your policy must include at least $100,000 in personal liability coverage and must be active on your move-in date."},
+{label:"Utilities",keys:["utilities","utility","electric","water","gas","trash","sewer","internet","cable"],
+ answer:"Utilities vary by home. In most homes, residents set up electric, gas and internet in their own name before move-in. Each listing notes whether water, sewer or trash is included."},
+{label:"Maintenance requests",keys:["maintenance request","maintenance","repair","broken","leak","work order","emergency"],
+ answer:"Current residents can submit maintenance requests 24/7 through the resident portal.\n\nFor emergencies, such as flooding, no heat in winter, or a major electrical problem, call our office line anytime. If you smell gas, leave the home and call 911 and the gas company first."},
+{label:"Contact us",keys:["contact","phone number","phone","call","email","office hours","talk to someone","speak to someone","office"],
+ answer:"You can reach our leasing office at "+OFFICE+", Monday through Friday, 9 a.m. to 5 p.m. After hours, leave a message and we'll call you back the next business day."}
 ];
-const popular=["Application fee","Income requirements","Credit requirements","Pet policy","Schedule a showing","Available rentals"];
+const popular=["How to apply","Application fee","Income requirements","Housing vouchers","Pet policy","Deposit / move-in costs","Schedule a showing","Available rentals"];
+const FALLBACK="I don't have an answer for that one yet. Please call our leasing office at "+OFFICE+" and we'll make sure you get the right information.";
+
+/* ---------- Matching: whole words only (so "application" no longer triggers "cat") ---------- */
+const STOP=new Set(["what","when","where","which","does","have","with","your","about","from","that","this","there","need","much","many","will","would","could","should","know","want","like","into","they","them","their","just","also"]);
+function stem(w){if(w.length>4&&w.endsWith("ies"))return w.slice(0,-3)+"y";if(w.length>3&&w.endsWith("s")&&!w.endsWith("ss"))return w.slice(0,-1);return w}
+function words(s){return s.toLowerCase().replace(/[’']/g,"").replace(/[^a-z0-9]+/g," ").trim().split(" ").filter(Boolean).map(stem)}
+function hasPhrase(q,p){outer:for(let i=0;i<=q.length-p.length;i++){for(let j=0;j<p.length;j++)if(q[i+j]!==p[j])continue outer;return true}return false}
+const index=data.map(x=>({item:x,keys:x.keys.map(words)}));
+function findMatch(text){
+  const q=words(text);let best=null,score=0;
+  for(const {item,keys} of index){
+    let s=0;const seen=new Set();
+    for(const k of keys){
+      if(hasPhrase(q,k)){s+=2+k.length;k.forEach(w=>seen.add(w))}
+    }
+    for(const k of keys)for(const w of k)if(w.length>3&&!STOP.has(w)&&!seen.has(w)&&q.includes(w)){s+=1;seen.add(w)}
+    if(s>score){score=s;best=item}
+  }
+  return score>=3?best:null;
+}
+
+/* ---------- Chat UI ---------- */
 const panel=document.getElementById("panel"),messages=document.getElementById("messages"),inp=document.getElementById("input");
-function add(t,c){let d=document.createElement("div");d.className="msg "+c;d.textContent=t;messages.appendChild(d);messages.scrollTop=messages.scrollHeight}
-function findAnswer(q){q=q.toLowerCase();let best=null,score=0;for(const x of data){let s=0;for(const k of x.keys){if(q.includes(k))s+=3;else for(const w of k.split(" "))if(w.length>3&&q.includes(w))s++}if(s>score){score=s;best=x}}return best&&score>=2?best.answer:"I don't have an approved answer for that yet. Please contact Desirable Management directly so you receive the correct information."}
-function ask(q){add(q,"user");setTimeout(()=>add(findAnswer(q),"bot"),140)}
-document.getElementById("launch").onclick=()=>{panel.classList.add("open");if(!messages.children.length)add("Hi! I’m the Desirable Management rental assistant. I can help with common questions about renting. What would you like to know?","bot");setTimeout(()=>inp.focus(),100)}
+if(!DEMO_MODE){document.getElementById("demoTag").remove();document.getElementById("demoBar").remove()}
+function add(t,c,link){let d=document.createElement("div");d.className="msg "+c;d.textContent=t;if(link){d.appendChild(document.createElement("br"));let a=document.createElement("a");a.href=link.href;a.textContent=link.text+" →";d.appendChild(a)}messages.appendChild(d);messages.scrollTop=messages.scrollHeight}
+function ask(q){add(q,"user");const m=findMatch(q);setTimeout(()=>m?add(m.answer,"bot",m.link):add(FALLBACK,"bot"),140)}
+document.getElementById("launch").onclick=()=>{panel.classList.add("open");if(!messages.children.length)add("Hi! I'm the Desirable Management rental assistant. I can help with common questions about renting. What would you like to know?","bot");setTimeout(()=>inp.focus(),100)}
 document.getElementById("close").onclick=()=>panel.classList.remove("open");
 document.getElementById("form").onsubmit=e=>{e.preventDefault();let q=inp.value.trim();if(q){inp.value="";ask(q)}}
-for(const name of popular){let b=document.createElement("button");b.className="chip";b.textContent=name;b.onclick=()=>ask(name);document.getElementById("chips").appendChild(b)}
+for(const name of popular){let b=document.createElement("button");b.className="chip";b.type="button";b.textContent=name;b.onclick=()=>ask(name);document.getElementById("chips").appendChild(b)}
 </script>
 </body>
 </html>
