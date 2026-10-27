@@ -12,7 +12,7 @@ const findMatch = new Function(logic + "; return findMatch;")();
 const cases = [
   // Old false matches (these used to answer with the pet policy or income)
   ["How do I submit an application?", "How to apply"],
-  ["What's the location of the property?", null],
+  ["What's the location of the property?", "Service area"],
   ["Is there carpet in the bedrooms?", null],
   ["Can I learn more about the area?", null],
 
@@ -26,8 +26,8 @@ const cases = [
   ["Do you allow cats?", "Pet policy"],
   ["Is it pet friendly?", "Pet policy"],
   ["Can I bring my dogs", "Pet policy"],
-  ["Do you accept Section 8?", "Housing vouchers"],
-  ["Do you take vouchers", "Housing vouchers"],
+  ["Do you accept Section 8?", "Housing assistance"],
+  ["Do you take vouchers", "Housing assistance"],
   ["Can I tour the house?", "Schedule a showing"],
   ["What homes are available?", "Available rentals"],
   ["What do I need to apply?", "Documents needed"],
@@ -36,9 +36,8 @@ const cases = [
   ["How much money do I need to move in", "Deposit / move-in costs"],
 
   // New topics
-  ["How much is rent?", "Rent amount & due date"],
-  ["When is rent due?", "Rent amount & due date"],
-  ["How long is the lease?", "Lease length"],
+  ["How much is rent?", "Paying rent"],
+  ["When is rent due?", "Paying rent"],
   ["Do I need renters insurance?", "Renters insurance"],
   ["Are utilities included?", "Utilities"],
   ["Is water included", "Utilities"],
@@ -46,9 +45,21 @@ const cases = [
   ["My sink has a leak", "Maintenance requests"],
   ["What's your phone number?", "Contact us"],
   ["How long until I'm approved?", "Approval time"],
+  ["Do you have homes in Newport News?", "Service area"],
+  ["I had an eviction, can I still apply?", "Rental & background history"],
+  ["Do you do background checks", "Rental & background history"],
+  ["Is my emotional support animal free?", "Pet policy"],
+  ["What is the resident benefit package?", "Resident Benefit Package"],
+  ["Can I pay rent in cash?", "Paying rent"],
+  ["I'm military, can I use my LES?", "Documents needed"],
+  ["How much is the holding fee?", "Deposit / move-in costs"],
+  ["Is there a waiting list?", "Available rentals"],
+  ["I want you to manage my property", "Property owners"],
+  ["What's your address?", "Contact us"],
+  ["How long is the lease?", null],
 
   // Popular-question buttons must answer themselves
-  ...["How to apply","Application fee","Income requirements","Housing vouchers","Pet policy",
+  ...["How to apply","Application fee","Income requirements","Credit requirements","Housing assistance","Pet policy",
       "Deposit / move-in costs","Schedule a showing","Available rentals"].map(l => [l, l]),
 ];
 

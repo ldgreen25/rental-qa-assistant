@@ -30,14 +30,14 @@ form{display:flex;gap:8px;padding:12px;background:white;border-top:1px solid var
 <div class="eyebrow">Desirable Management</div>
 <h1>Find your answer faster.</h1>
 <p>Use the rental assistant for common questions about applications, qualifications, pets, showings and available rentals.</p>
-<div class="demo-tag" id="demoTag">Demo version: sample answers for review</div>
+<div class="demo-tag" id="demoTag">Preview: answers pending owner review</div>
 </main>
 
 <button class="launch" id="launch">💬 Ask About Renting</button>
 
 <section class="panel" id="panel">
 <div class="head"><div><h2>Ask Desirable</h2><p>Rental Information Assistant</p></div><button class="close" id="close" aria-label="Close">×</button></div>
-<div class="demo-bar" id="demoBar">Demo: sample answers, not final Desirable Management policy</div>
+<div class="demo-bar" id="demoBar">Preview: answers pending final review by Desirable Management</div>
 <div class="messages" id="messages"></div>
 <div class="popular"><strong>Common questions</strong><div id="chips"></div></div>
 <form id="form"><input id="input" placeholder="Ask a rental question..." autocomplete="off"><button class="send">Send</button></form>
@@ -46,57 +46,80 @@ form{display:flex;gap:8px;padding:12px;background:white;border-top:1px solid var
 
 <script>
 /* ---------------------------------------------------------------
-   DEMO MODE
-   The answers below are SAMPLE answers written for a demo, modeled
-   on typical Virginia property-management FAQs. Replace each one with
-   Desirable Management's approved wording, then set DEMO_MODE=false
-   to hide the demo labels.
-   Links marked href:"#" are placeholders for the real pages.
+   PREVIEW MODE
+   Answers are drawn from Desirable Management's website
+   (shedoesitall.net) as of Oct 2026, pending the owner's review.
+   Once she approves the wording, set PREVIEW_MODE=false to hide the
+   preview labels.
 ---------------------------------------------------------------- */
-const DEMO_MODE=true;
-const OFFICE="(757) 555-0142";
+const PREVIEW_MODE=true;
+const OFFICE="(757) 806-4593";
+const EMAIL="Yesrent2me@gmail.com";
+const LINKS={
+  rentals:"https://showmojo.com/ef0519201a/l",
+  qualifications:"https://www.shedoesitall.net/rental-qualifications",
+  policies:"https://www.shedoesitall.net/application-policies",
+  pets:"https://www.shedoesitall.net/pet-application",
+  portal:"https://desirablemanagement.appfolio.com/connect/users/sign_in",
+  benefits:"https://www.shedoesitall.net/tenant-benifit-package",
+  owners:"https://www.shedoesitall.net/current-potential-owners",
+  contact:"https://www.shedoesitall.net/#contactus"
+};
 
 const data=[
 {label:"How to apply",keys:["how to apply","how do i apply","apply","application","submit application","apply online"],
- answer:"You can apply online from any listing by selecting \"Apply Now.\" Every adult 18 or older who will live in the home completes a separate application.\n\nOnce your application and documents are complete, most decisions are made within 2–3 business days.",
- link:{text:"Start an application",href:"#"}},
+ answer:"Start by finding a home on our available rentals page and applying there. Every adult 18 or older who will live in the home must complete their own application.\n\nWe begin processing once all applicants have submitted their applications, uploaded their documents and paid the application fee. Applications are processed in the order they're received.",
+ link:{text:"View available rentals",href:LINKS.rentals}},
 {label:"Application fee",keys:["application fee","fee to apply","cost to apply","apply fee","screening fee"],
- answer:"The application fee is $50 per adult applicant. It covers your credit and background screening and is non-refundable once screening begins."},
-{label:"Documents needed",keys:["what do i need to apply","what do i need","documents","paperwork","pay stub","proof of income","identification","photo id","id"],
- answer:"Please have these ready for each adult applicant:\n• A government-issued photo ID\n• Proof of income: your last two pay stubs, an offer letter, or a benefits or voucher award letter\n• Self-employed applicants: last two years of tax returns or three months of bank statements\n• Contact information for your current and previous landlords"},
+ answer:"The application fee is $47 per adult applicant and is non-refundable. Personal checks are not accepted.\n\nIf you apply with a co-signer, the co-signer also completes an application and pays a non-refundable fee."},
+{label:"Documents needed",keys:["what do i need to apply","what do i need","documents","paperwork","pay stub","proof of income","identification","photo id","id","les"],
+ answer:"Each adult applicant will need:\n• A photo ID (state, military or government-issued)\n• Your two most recent pay stubs, or your two most recent LES if you're active-duty military\n• Recent bank statements showing deposits that match your pay stubs\n• Self-employed applicants: six months of bank statements",
+ link:{text:"See full rental qualifications",href:LINKS.qualifications}},
 {label:"Approval time",keys:["how long approval","how long to hear","approval time","approved","decision","when will i know","processing time"],
- answer:"Most applications are reviewed within 2–3 business days after everything is submitted. Missing documents or landlord references we can't reach are the most common causes of delay. We'll contact you by email or phone with a decision."},
-{label:"Income requirements",keys:["income requirement","income","salary","how much do i need to make","make","earn","wages"],
- answer:"Total household income should be at least 3 times the monthly rent. Roommates and co-applicants can combine their income.\n\nIf you use a housing voucher or other rental assistance, we compare your income only to your share of the rent."},
+ answer:"Applications are processed in the order received, starting once every applicant has submitted a complete application, documents and fee. Missing items are the most common cause of delays and can mean the home goes to another applicant.\n\nOnce approved, your approval is good for 3 months. Your application also stays on file for 60 days if you'd like to be considered for a different home."},
+{label:"Income requirements",keys:["income requirement","income","salary","how much do i need to make","make","earn","wages","job","employment","employed","self employed"],
+ answer:"Your household's combined net (take-home) income should be at least 2 times the monthly rent. Income from all adult applicants is combined.\n\nYou'll also need to have been at your current job for more than 3 months, unless you've transferred within your company. Self-employed applicants can qualify with six months of bank statements."},
 {label:"Credit requirements",keys:["credit requirement","credit score","credit","fico","bad credit","no credit","co signer","cosigner","guarantor"],
- answer:"We look at your full credit history, not just a score. Applicants with a score of 600 or higher generally qualify. Lower or limited credit may still be approved with an additional deposit or a qualified co-signer.\n\nUnpaid balances owed to a previous landlord are reviewed closely."},
-{label:"Housing vouchers",keys:["section 8","voucher","housing choice","housing assistance","rental assistance","hcv"],
- answer:"Yes, we welcome Housing Choice Vouchers (Section 8) and other forms of rental assistance. Applicants using assistance go through the same screening as every other applicant, and your assistance is counted toward the income requirement."},
-{label:"Pet policy",keys:["pet policy","pet","dog","cat","animal","pet fee","pet rent","breed"],
- answer:"Most of our homes allow up to two pets with approval. Each approved pet has a one-time $300 non-refundable pet fee and $35 per month in pet rent. Breed and weight limits vary by home and are noted on each listing.\n\nService and assistance animals are not pets and are never charged pet fees. Ask us about submitting an accommodation request."},
-{label:"Deposit / move-in costs",keys:["security deposit","deposit","move in cost","move in","holding fee","upfront","first month"],
- answer:"The security deposit is usually equal to one month's rent. Virginia law caps it at two months' rent.\n\nBefore you get your keys, you'll pay the security deposit and your first month's rent, prorated if you move in mid-month. Any approved pet fees are also due at move-in."},
+ answer:"We look for a credit score of 580 or higher. Applicants at or below 580 may still be considered with additional conditions.\n\nIf you don't have established credit or rental history, a co-signer may be considered. Co-signers need a credit score of at least 700."},
+{label:"Rental & background history",keys:["eviction","evictions","background check","background","criminal","felony","bankruptcy","judgment","rental history","landlord reference"],
+ answer:"We look for good, verifiable rental history, or proof that you previously owned your home. Applications are also screened for:\n• Evictions, judgments or garnishments in recent years\n• Bankruptcy within the last 3 years\n• Convictions within the last 5 years related to drugs, violent crimes or firearms",
+ link:{text:"See full rental qualifications",href:LINKS.qualifications}},
+{label:"Housing assistance",keys:["section 8","voucher","housing choice","housing assistance","rental assistance","hcv"],
+ answer:"Yes, housing assistance is accepted. Applicants using assistance are screened by the same criteria as everyone else. Please call us at "+OFFICE+" with any questions about using your voucher with a specific home."},
+{label:"Pet policy",keys:["pet policy","pet","dog","cat","animal","pet fee","pet rent","breed","esa","emotional support","service animal"],
+ answer:"Pets are screened through PetScreening, a third-party service. The pet application fee is $20 for the first pet and $15 for the second. Service animals and emotional support animals are screened for free.\n\nApproved pets may have pet rent, a pet deposit and a pet acceptance fee, based on the pet's age, weight and breed, owner approval and its FIDO score.",
+ link:{text:"Start a pet application",href:LINKS.pets}},
+{label:"Deposit / move-in costs",keys:["security deposit","deposit","move in cost","move in","holding fee","upfront","first month","prorated"],
+ answer:"After approval, here's what to expect:\n• A holding fee is due within 24 hours of approval to hold the home.\n• Your lease must be signed and returned within 72 hours.\n• A security deposit and your first month's prorated rent are due before move-in.\n• Move-in is within 30 days of approval or of the home becoming available, whichever is later.\n\nIf you don't sign the lease or move in, the holding fee is forfeited. Move-in funds are paid online, and self check-in is available on move-in day."},
 {label:"Schedule a showing",keys:["schedule a showing","showing","tour","view property","see property","see the house","walk through","visit"],
- answer:"You can book an in-person showing from any listing using \"Schedule a Showing,\" or call our office. Showings are available 7 days a week. Please bring a photo ID.",
- link:{text:"Schedule a showing",href:"#"}},
-{label:"Available rentals",keys:["available rentals","available","availability","vacancy","vacancies","homes for rent","listing","rentals","for rent"],
- answer:"Our current homes are listed on our rentals page, which is updated daily. Each listing shows the rent, deposit, pet policy and available move-in date.",
- link:{text:"View available rentals",href:"#"}},
-{label:"Rent amount & due date",keys:["how much is rent","rent price","monthly rent","rent","pay rent","due date","late fee","price"],
- answer:"Rent varies by home and is shown on each listing. Rent is due on the 1st of each month. A late fee applies to payments received after the 5th. Current residents can pay online through the resident portal."},
-{label:"Lease length",keys:["lease length","how long is the lease","lease term","lease","month to month","short term","break lease"],
- answer:"Our standard lease is 12 months. Some homes offer 6- or 18-month terms, which are noted on the listing. Ask us before you apply if you need a different term."},
+ answer:"You can request a showing for any home directly from its listing on our available rentals page.",
+ link:{text:"View rentals and schedule",href:LINKS.rentals}},
+{label:"Available rentals",keys:["available rentals","available","availability","vacancy","vacancies","homes for rent","listing","rentals","for rent","waiting list","waitlist"],
+ answer:"All of our current homes are listed on our available rentals page. If nothing fits right now, you can join our waiting list on our website by entering your email address.",
+ link:{text:"View available rentals",href:LINKS.rentals}},
+{label:"Service area",keys:["service area","what areas","which cities","where are your homes","location","hampton","newport news","norfolk","virginia beach","chesapeake","williamsburg","yorktown","portsmouth","carrollton","isle of wight"],
+ answer:"We manage homes across Hampton Roads, including Hampton, Newport News, Williamsburg, Yorktown, Norfolk, Portsmouth, Chesapeake, Virginia Beach, Carrollton and Isle of Wight."},
+{label:"Paying rent",keys:["pay rent","how much is rent","rent price","monthly rent","rent","payment","due date","late fee","cash","portal"],
+ answer:"Rent varies by home and is shown on each listing. Residents pay rent online through the resident portal, which is available 24/7. Local cash-payment options are also available.\n\nFor questions about due dates or late fees, call the office at "+OFFICE+".",
+ link:{text:"Resident portal",href:LINKS.portal}},
 {label:"Renters insurance",keys:["renters insurance","renter insurance","insurance"],
- answer:"Renters insurance is required for all residents. Your policy must include at least $100,000 in personal liability coverage and must be active on your move-in date."},
+ answer:"Renters insurance is required for the full term of your lease."},
 {label:"Utilities",keys:["utilities","utility","electric","water","gas","trash","sewer","internet","cable"],
- answer:"Utilities vary by home. In most homes, residents set up electric, gas and internet in their own name before move-in. Each listing notes whether water, sewer or trash is included."},
+ answer:"Applicants must be able to turn on all utilities in their own name. Please check with us about which utilities apply to a specific home."},
+{label:"Resident Benefit Package",keys:["resident benefit package","benefit package","benefits","credit building","rent reporting"],
+ answer:"Every lease includes our Resident Benefit Package, starting at $15 per month, which is billed with your rent. It includes:\n• A 24/7 online resident portal\n• Positive rent reporting to help build your credit\n• A 24/7 emergency maintenance hotline and priority maintenance\n• Routine property check-ins and help with renewals and move-outs",
+ link:{text:"Learn more",href:LINKS.benefits}},
 {label:"Maintenance requests",keys:["maintenance request","maintenance","repair","broken","leak","work order","emergency"],
- answer:"Current residents can submit maintenance requests 24/7 through the resident portal.\n\nFor emergencies, such as flooding, no heat in winter, or a major electrical problem, call our office line anytime. If you smell gas, leave the home and call 911 and the gas company first."},
-{label:"Contact us",keys:["contact","phone number","phone","call","email","office hours","talk to someone","speak to someone","office"],
- answer:"You can reach our leasing office at "+OFFICE+", Monday through Friday, 9 a.m. to 5 p.m. After hours, leave a message and we'll call you back the next business day."}
+ answer:"Current residents can submit maintenance requests anytime through the resident portal. Requests are tracked so you can follow their status, and we respond within 24–48 business hours.\n\nFor after-hours emergencies, use the emergency maintenance hotline. If you smell gas or there is a fire, leave the home and call 911 first.",
+ link:{text:"Submit a request",href:LINKS.portal}},
+{label:"Property owners",keys:["property owner","owner","manage my property","management services","rent my house","landlord services","rental analysis"],
+ answer:"We manage single-family homes, multi-family properties, apartments and commercial space. Owners can schedule a free consultation to review rent strategy, expenses and liability.",
+ link:{text:"See owner services",href:LINKS.owners}},
+{label:"Contact us",keys:["contact","phone number","phone","call","email","office hours","talk to someone","speak to someone","office","address"],
+ answer:"Desirable Management LLC\n"+OFFICE+"\n"+EMAIL+"\n8106 Roanoke Ave, Hampton, VA 23605\n\nOffice hours: Monday–Friday, 9 a.m. to 5 p.m. Closed Saturday and Sunday."}
 ];
-const popular=["How to apply","Application fee","Income requirements","Housing vouchers","Pet policy","Deposit / move-in costs","Schedule a showing","Available rentals"];
-const FALLBACK="I don't have an answer for that one yet. Please call our leasing office at "+OFFICE+" and we'll make sure you get the right information.";
+const popular=["How to apply","Application fee","Income requirements","Credit requirements","Housing assistance","Pet policy","Deposit / move-in costs","Available rentals"];
+const FALLBACK="I don't have an answer for that one yet. Please call our office at "+OFFICE+" (Mon–Fri, 9–5) or email "+EMAIL+" and we'll make sure you get the right information.";
 
 /* ---------- Matching: whole words only (so "application" no longer triggers "cat") ---------- */
 const STOP=new Set(["what","when","where","which","does","have","with","your","about","from","that","this","there","need","much","many","will","would","could","should","know","want","like","into","they","them","their","just","also"]);
@@ -119,8 +142,8 @@ function findMatch(text){
 
 /* ---------- Chat UI ---------- */
 const panel=document.getElementById("panel"),messages=document.getElementById("messages"),inp=document.getElementById("input");
-if(!DEMO_MODE){document.getElementById("demoTag").remove();document.getElementById("demoBar").remove()}
-function add(t,c,link){let d=document.createElement("div");d.className="msg "+c;d.textContent=t;if(link){d.appendChild(document.createElement("br"));let a=document.createElement("a");a.href=link.href;a.textContent=link.text+" →";d.appendChild(a)}messages.appendChild(d);messages.scrollTop=messages.scrollHeight}
+if(!PREVIEW_MODE){document.getElementById("demoTag").remove();document.getElementById("demoBar").remove()}
+function add(t,c,link){let d=document.createElement("div");d.className="msg "+c;d.textContent=t;if(link){d.appendChild(document.createElement("br"));let a=document.createElement("a");a.href=link.href;a.target="_blank";a.rel="noopener";a.textContent=link.text+" →";d.appendChild(a)}messages.appendChild(d);messages.scrollTop=messages.scrollHeight}
 function ask(q){add(q,"user");const m=findMatch(q);setTimeout(()=>m?add(m.answer,"bot",m.link):add(FALLBACK,"bot"),140)}
 document.getElementById("launch").onclick=()=>{panel.classList.add("open");if(!messages.children.length)add("Hi! I'm the Desirable Management rental assistant. I can help with common questions about renting. What would you like to know?","bot");setTimeout(()=>inp.focus(),100)}
 document.getElementById("close").onclick=()=>panel.classList.remove("open");
