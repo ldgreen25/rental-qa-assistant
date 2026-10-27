@@ -3,45 +3,167 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Rental Assistant | Desirable Management</title>
+<title>Rental Questions | Desirable Management</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&display=swap" rel="stylesheet">
 <style>
-:root{--ink:#202722;--green:#294c3a;--green2:#1f3b2d;--cream:#f7f4ed;--gold:#b99a62;--line:#e7e2d8;--muted:#6c746e}
-*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--cream);color:var(--ink);min-height:100vh}
-.hero{max-width:880px;margin:0 auto;padding:70px 24px;text-align:center}.eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-weight:700}
-.hero h1{font-family:Georgia,serif;font-size:42px;margin:10px 0 14px}.hero p{max-width:620px;margin:auto;color:var(--muted);line-height:1.6}
-.demo-tag{display:inline-block;margin-top:22px;padding:6px 12px;border:1px dashed var(--gold);border-radius:999px;font-size:12px;color:var(--green2);background:#fffdf7}
-.launch{position:fixed;right:22px;bottom:22px;border:0;border-radius:999px;padding:15px 19px;background:var(--green);color:white;font-weight:700;font-size:14px;cursor:pointer;box-shadow:0 14px 36px #0003}
-.panel{position:fixed;right:22px;bottom:82px;width:min(400px,calc(100vw - 28px));height:min(625px,calc(100vh - 110px));background:#fff;border-radius:20px;box-shadow:0 20px 55px #0003;display:none;flex-direction:column;overflow:hidden;border:1px solid #ffffff66}
-.panel.open{display:flex}.head{background:var(--green);color:white;padding:20px 18px;display:flex;justify-content:space-between;align-items:start}
-.head h2{font-family:Georgia,serif;margin:0 0 5px;font-size:20px}.head p{margin:0;font-size:12px;opacity:.85}.close{border:0;background:none;color:white;font-size:25px;cursor:pointer}
-.demo-bar{background:#f3ead8;color:#5b4a26;font-size:11px;text-align:center;padding:6px 10px;border-bottom:1px solid var(--line)}
-.messages{flex:1;overflow:auto;padding:15px;background:#faf9f6}.msg{max-width:86%;padding:11px 13px;border-radius:14px;margin:8px 0;font-size:14px;line-height:1.45;white-space:pre-line}
-.bot{background:white;border:1px solid var(--line);border-bottom-left-radius:5px}.user{background:var(--green);color:white;margin-left:auto;border-bottom-right-radius:5px}
-.msg a{display:inline-block;margin-top:8px;color:var(--green);font-weight:700;text-decoration:none;border-bottom:1px solid var(--gold)}
-.popular{padding:10px 13px;background:#faf9f6;border-top:1px solid var(--line);max-height:118px;overflow:auto}.popular strong{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:0 3px 7px}
-.chip{border:1px solid var(--line);background:white;color:var(--green2);border-radius:999px;padding:8px 10px;margin:3px;font-size:12px;cursor:pointer}.chip:hover{border-color:var(--gold)}
-form{display:flex;gap:8px;padding:12px;background:white;border-top:1px solid var(--line)}input{flex:1;border:1px solid var(--line);border-radius:11px;padding:11px 12px;font-size:14px;outline:none}input:focus{border-color:var(--green)}
-.send{border:0;border-radius:11px;background:var(--green);color:white;padding:0 15px;font-weight:700;cursor:pointer}.fine{text-align:center;padding:0 12px 11px;color:#8a908c;font-size:10px;background:white}
-@media(max-width:520px){.panel{right:8px;left:8px;bottom:76px;width:auto;height:calc(100vh - 90px)}.launch{right:13px;bottom:13px}.hero h1{font-size:34px}}
+:root{
+  --navy:#16324F;--navy-deep:#0F2439;--porch:#F4C152;--porch-soft:#FDF3DA;
+  --bg:#F4F6F7;--paper:#FFFFFF;--ink:#1D2933;--muted:#5A6A75;--line:#D9E0E4;
+  --display:"Bricolage Grotesque",Georgia,sans-serif;--body:"Atkinson Hyperlegible",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:var(--body);font-size:17px;line-height:1.55;background:var(--bg);color:var(--ink);min-height:100vh}
+a{color:var(--navy)}
+:focus-visible{outline:3px solid var(--porch);outline-offset:2px;border-radius:6px}
+.wrap{max-width:1040px;margin:0 auto;padding:0 24px}
+
+/* Top bar */
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:22px}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:800;font-size:20px;color:var(--navy);text-decoration:none}
+.brand svg{flex:none}
+.top-call{font-weight:700;font-size:15px;color:var(--navy);text-decoration:none;border-bottom:2px solid var(--porch)}
+
+/* Hero */
+.hero{padding-block:56px 64px}
+.hero h1{font-family:var(--display);font-weight:800;font-size:clamp(38px,6.4vw,68px);line-height:1.02;letter-spacing:-.02em;margin:0 0 18px;color:var(--navy);max-width:14ch}
+.hero .lede{max-width:56ch;margin:0 0 34px;color:var(--muted);font-size:18px}
+.askbar{display:flex;align-items:stretch;max-width:720px;background:var(--paper);border:2px solid var(--navy);border-radius:16px;box-shadow:6px 6px 0 var(--porch);overflow:hidden}
+.askbar label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.askbar input{flex:1;min-width:0;border:0;padding:20px 20px;font:inherit;font-size:18px;color:var(--ink);background:transparent;outline:none}
+.askbar input::placeholder{color:#8795A0}
+.askbar button{border:0;background:var(--navy);color:#fff;font:700 17px var(--body);padding:0 26px;cursor:pointer}
+.askbar button:hover{background:var(--navy-deep)}
+.hero-links{display:flex;flex-wrap:wrap;gap:10px 22px;margin-top:26px;font-size:15px}
+.hero-links a{font-weight:700;text-decoration:none;border-bottom:2px solid var(--line)}
+.hero-links a:hover{border-color:var(--porch)}
+.preview-note{display:inline-block;margin-top:30px;font-size:13px;color:#6B5212;background:var(--porch-soft);border:1px solid #EBD39A;border-radius:8px;padding:6px 10px}
+
+/* Journey */
+.journey{padding-block:8px 72px}
+.journey h2{font-family:var(--display);font-weight:700;font-size:26px;margin:0 0 22px;color:var(--navy)}
+.stages{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:2px solid var(--navy)}
+.stage{padding:22px 22px 6px 0}
+.stage+.stage{padding-left:22px;border-left:1px solid var(--line)}
+.stage h3{display:flex;align-items:baseline;gap:10px;font-family:var(--display);font-weight:700;font-size:19px;margin:0 0 4px}
+.stage h3 span{font-size:14px;color:var(--muted);font-family:var(--body);font-weight:700}
+.stage p{margin:0 0 14px;color:var(--muted);font-size:15px}
+.q{display:block;width:100%;text-align:left;background:none;border:0;border-top:1px solid var(--line);padding:11px 2px;font:inherit;font-size:16px;color:var(--ink);cursor:pointer}
+.q:hover{color:var(--navy);background:linear-gradient(90deg,var(--porch-soft),transparent)}
+
+footer{border-top:1px solid var(--line);padding:26px 0 110px;color:var(--muted);font-size:14px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:8px 28px;justify-content:space-between}
+footer strong{color:var(--ink)}
+
+/* Launcher + panel (embeddable widget) */
+.launch{position:fixed;right:22px;bottom:22px;z-index:20;display:flex;align-items:center;gap:10px;border:2px solid var(--navy);border-radius:999px;padding:13px 20px 13px 16px;background:var(--porch);color:var(--navy);font:700 16px var(--body);cursor:pointer;box-shadow:0 10px 30px rgba(15,36,57,.25)}
+.launch:hover{background:#F7CD6C}
+.panel{position:fixed;right:22px;bottom:90px;z-index:30;width:min(410px,calc(100vw - 28px));height:min(640px,calc(100vh - 118px));background:var(--paper);border-radius:18px;box-shadow:0 24px 60px rgba(15,36,57,.3);display:none;flex-direction:column;overflow:hidden;border:2px solid var(--navy)}
+.panel.open{display:flex;animation:rise .22s ease-out}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.head{background:var(--navy);color:#fff;padding:16px 16px 16px 18px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.head-id{display:flex;align-items:center;gap:12px}
+.head-mark{width:38px;height:38px;border-radius:10px;background:var(--porch);display:grid;place-items:center;flex:none}
+.head h2{font-family:var(--display);font-weight:700;margin:0;font-size:19px;line-height:1.2}
+.head p{margin:2px 0 0;font-size:13px;opacity:.8}
+.close{border:0;background:rgba(255,255,255,.12);color:#fff;width:34px;height:34px;border-radius:10px;font-size:22px;line-height:1;cursor:pointer}
+.close:hover{background:rgba(255,255,255,.22)}
+.demo-bar{background:var(--porch-soft);color:#6B5212;font-size:12px;text-align:center;padding:6px 10px;border-bottom:1px solid #EBD39A}
+.messages{flex:1;overflow:auto;padding:16px;background:var(--bg)}
+.msg{max-width:88%;padding:11px 14px;border-radius:14px;margin:8px 0;font-size:15px;line-height:1.5;white-space:pre-line}
+.bot{background:var(--paper);border:1px solid var(--line);border-top-left-radius:4px}
+.user{background:var(--navy);color:#fff;margin-left:auto;border-top-right-radius:4px}
+.msg a.go{display:inline-block;margin-top:10px;padding:8px 12px;border-radius:9px;background:var(--porch-soft);border:1px solid #EBD39A;color:var(--navy);font-weight:700;font-size:14px;text-decoration:none}
+.msg a.go:hover{background:var(--porch)}
+.typing{display:inline-flex;gap:4px;padding:14px}
+.typing i{width:7px;height:7px;border-radius:50%;background:var(--muted);opacity:.4;animation:blink 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes blink{50%{opacity:1}}
+.popular{display:flex;gap:6px;overflow-x:auto;padding:10px 12px;background:var(--paper);border-top:1px solid var(--line);scrollbar-width:thin}
+.chip{flex:none;border:1px solid var(--line);background:var(--paper);color:var(--navy);border-radius:999px;padding:7px 12px;font:700 13px var(--body);cursor:pointer;white-space:nowrap}
+.chip:hover{border-color:var(--navy);background:var(--porch-soft)}
+#form{display:flex;gap:8px;padding:10px 12px 12px;background:var(--paper)}
+#input{flex:1;min-width:0;border:1.5px solid var(--line);border-radius:12px;padding:12px 13px;font:inherit;font-size:16px;outline:none}
+#input:focus{border-color:var(--navy)}
+.send{border:0;border-radius:12px;background:var(--navy);color:#fff;padding:0 16px;font:700 15px var(--body);cursor:pointer}
+.fine{text-align:center;padding:0 14px 12px;color:var(--muted);font-size:11px;background:var(--paper)}
+
+@media(max-width:820px){
+  .stages{grid-template-columns:1fr}
+  .stage,.stage+.stage{padding:20px 0 4px;border-left:0}
+  .stage+.stage{border-top:2px solid var(--navy)}
+}
+@media(max-width:560px){
+  body{font-size:16px}
+  .wrap{padding:0 16px}
+  .hero{padding-block:28px 48px}
+  .askbar{flex-direction:column;box-shadow:4px 4px 0 var(--porch)}
+  .askbar button{padding:14px}
+  .top-call{display:none}
+  .panel{inset:0;width:auto;height:auto;border-radius:0;border:0}
+  .launch{right:14px;bottom:14px}
+}
+@media(prefers-reduced-motion:reduce){.panel.open{animation:none}.typing i{animation:none;opacity:.7}}
 </style>
 </head>
 <body>
-<main class="hero">
-<div class="eyebrow">Desirable Management</div>
-<h1>Find your answer faster.</h1>
-<p>Use the rental assistant for common questions about applications, qualifications, pets, showings and available rentals.</p>
-<div class="demo-tag" id="demoTag">Preview: answers pending owner review</div>
+<header class="wrap top">
+  <a class="brand" href="https://www.shedoesitall.net/" aria-label="Desirable Management home">
+    <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path d="M4 14 15 5l11 9v12H4z" fill="#16324F"/><rect x="12" y="17" width="6" height="9" rx="1" fill="#F4C152"/></svg>
+    Desirable Management
+  </a>
+  <a class="top-call" id="topCall" href="tel:+17578064593">(757) 806-4593</a>
+</header>
+
+<main>
+<section class="wrap hero">
+  <h1>Questions about renting with us? Ask here.</h1>
+  <p class="lede">Get quick answers about applying, qualifying, pets, move-in and living in a Desirable Management home across Hampton Roads.</p>
+  <form class="askbar" id="heroForm">
+    <label for="heroInput">Ask a rental question</label>
+    <input id="heroInput" placeholder="Try “Do you accept housing vouchers?”" autocomplete="off">
+    <button type="submit">Ask</button>
+  </form>
+  <div class="hero-links">
+    <a href="https://showmojo.com/ef0519201a/l" target="_blank" rel="noopener">See available homes</a>
+    <a href="https://www.shedoesitall.net/rental-qualifications" target="_blank" rel="noopener">Read rental qualifications</a>
+    <a href="https://desirablemanagement.appfolio.com/connect/users/sign_in" target="_blank" rel="noopener">Resident sign-in</a>
+  </div>
+  <div class="preview-note" id="demoTag">Preview: answers pending final review by Desirable Management</div>
+</section>
+
+<section class="wrap journey" aria-labelledby="journeyTitle">
+  <h2 id="journeyTitle">Find your question by where you are</h2>
+  <div class="stages" id="stages"></div>
+</section>
 </main>
 
-<button class="launch" id="launch">💬 Ask About Renting</button>
+<footer>
+  <div class="wrap">
+    <span><strong>Desirable Management LLC</strong><br>8106 Roanoke Ave, Hampton, VA 23605</span>
+    <span>Office hours: Mon–Fri, 9 a.m.–5 p.m.<br>Equal Housing Opportunity</span>
+  </div>
+</footer>
 
-<section class="panel" id="panel">
-<div class="head"><div><h2>Ask Desirable</h2><p>Rental Information Assistant</p></div><button class="close" id="close" aria-label="Close">×</button></div>
-<div class="demo-bar" id="demoBar">Preview: answers pending final review by Desirable Management</div>
-<div class="messages" id="messages"></div>
-<div class="popular"><strong>Common questions</strong><div id="chips"></div></div>
-<form id="form"><input id="input" placeholder="Ask a rental question..." autocomplete="off"><button class="send">Send</button></form>
-<div class="fine">Answers are informational and do not constitute rental approval.</div>
+<button class="launch" id="launch" aria-controls="panel" aria-expanded="false">
+  <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg>
+  Ask a question
+</button>
+
+<section class="panel" id="panel" role="dialog" aria-label="Desirable Management rental questions">
+  <div class="head">
+    <div class="head-id">
+      <div class="head-mark"><svg width="20" height="20" viewBox="0 0 30 30" aria-hidden="true"><path d="M4 14 15 5l11 9v12H4z" fill="#16324F"/></svg></div>
+      <div><h2>Ask Desirable</h2><p>Answers about renting with us</p></div>
+    </div>
+    <button class="close" id="close" aria-label="Close">×</button>
+  </div>
+  <div class="demo-bar" id="demoBar">Preview: answers pending final review</div>
+  <div class="messages" id="messages" aria-live="polite"></div>
+  <div class="popular" id="chips" aria-label="Common questions"></div>
+  <form id="form"><input id="input" placeholder="Type your question" autocomplete="off" aria-label="Type your question"><button class="send">Send</button></form>
+  <div class="fine">Answers are general information, not an approval decision.</div>
 </section>
 
 <script>
@@ -141,14 +263,36 @@ function findMatch(text){
 }
 
 /* ---------- Chat UI ---------- */
-const panel=document.getElementById("panel"),messages=document.getElementById("messages"),inp=document.getElementById("input");
+const stages=[
+  {title:"Before you apply",step:"1",note:"Qualifications, fees and what to bring.",items:["How to apply","Application fee","Documents needed","Income requirements","Credit requirements","Rental & background history","Housing assistance","Pet policy","Schedule a showing"]},
+  {title:"After approval",step:"2",note:"Holding your home and getting the keys.",items:["Approval time","Deposit / move-in costs","Renters insurance","Utilities"]},
+  {title:"Living here",step:"3",note:"Rent, repairs and resident perks.",items:["Paying rent","Maintenance requests","Resident Benefit Package","Contact us"]}
+];
+const panel=document.getElementById("panel"),messages=document.getElementById("messages"),inp=document.getElementById("input"),launch=document.getElementById("launch");
 if(!PREVIEW_MODE){document.getElementById("demoTag").remove();document.getElementById("demoBar").remove()}
-function add(t,c,link){let d=document.createElement("div");d.className="msg "+c;d.textContent=t;if(link){d.appendChild(document.createElement("br"));let a=document.createElement("a");a.href=link.href;a.target="_blank";a.rel="noopener";a.textContent=link.text+" →";d.appendChild(a)}messages.appendChild(d);messages.scrollTop=messages.scrollHeight}
-function ask(q){add(q,"user");const m=findMatch(q);setTimeout(()=>m?add(m.answer,"bot",m.link):add(FALLBACK,"bot"),140)}
-document.getElementById("launch").onclick=()=>{panel.classList.add("open");if(!messages.children.length)add("Hi! I'm the Desirable Management rental assistant. I can help with common questions about renting. What would you like to know?","bot");setTimeout(()=>inp.focus(),100)}
-document.getElementById("close").onclick=()=>panel.classList.remove("open");
-document.getElementById("form").onsubmit=e=>{e.preventDefault();let q=inp.value.trim();if(q){inp.value="";ask(q)}}
+const reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+function add(t,c,link){let d=document.createElement("div");d.className="msg "+c;d.textContent=t;if(link){d.appendChild(document.createElement("br"));let a=document.createElement("a");a.className="go";a.href=link.href;a.target="_blank";a.rel="noopener";a.textContent=link.text;d.appendChild(a)}messages.appendChild(d);messages.scrollTop=messages.scrollHeight;return d}
+function ask(q){
+  add(q,"user");const m=findMatch(q);
+  const t=document.createElement("div");t.className="msg bot typing";t.innerHTML="<i></i><i></i><i></i>";t.setAttribute("aria-label","Typing");messages.appendChild(t);messages.scrollTop=messages.scrollHeight;
+  setTimeout(()=>{t.remove();m?add(m.answer,"bot",m.link):add(FALLBACK,"bot")},reduce?0:450);
+}
+function openPanel(){panel.classList.add("open");launch.setAttribute("aria-expanded","true");if(!messages.children.length)add("Hi! Ask me anything about renting with Desirable Management, or tap a common question below.","bot")}
+function closePanel(){panel.classList.remove("open");launch.setAttribute("aria-expanded","false");launch.focus()}
+launch.onclick=()=>{panel.classList.contains("open")?closePanel():(openPanel(),setTimeout(()=>inp.focus(),80))};
+document.getElementById("close").onclick=closePanel;
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&panel.classList.contains("open"))closePanel()});
+document.getElementById("form").onsubmit=e=>{e.preventDefault();let q=inp.value.trim();if(q){inp.value="";ask(q)}};
+document.getElementById("heroForm").onsubmit=e=>{e.preventDefault();const h=document.getElementById("heroInput");let q=h.value.trim();if(!q){h.focus();return}h.value="";openPanel();ask(q)};
 for(const name of popular){let b=document.createElement("button");b.className="chip";b.type="button";b.textContent=name;b.onclick=()=>ask(name);document.getElementById("chips").appendChild(b)}
+const st=document.getElementById("stages");
+for(const s of stages){
+  const col=document.createElement("div");col.className="stage";
+  const h=document.createElement("h3");const n=document.createElement("span");n.textContent=s.step;h.append(n,s.title);
+  const p=document.createElement("p");p.textContent=s.note;col.append(h,p);
+  for(const label of s.items){const item=data.find(x=>x.label===label);if(!item)continue;const b=document.createElement("button");b.className="q";b.type="button";b.textContent=item.label;b.onclick=()=>{openPanel();ask(item.label)};col.appendChild(b)}
+  st.appendChild(col);
+}
 </script>
 </body>
 </html>
