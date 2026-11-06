@@ -98,7 +98,7 @@ html.full .launch[aria-expanded="true"]{visibility:hidden}
   <div class="messages" id="messages" aria-live="polite"></div>
   <div class="popular" id="chips" aria-label="Common questions"></div>
   <form id="form"><input id="input" placeholder="Type your question" autocomplete="off" aria-label="Type your question"><button class="send">Send</button></form>
-  <div class="fine">Answers are general information, not an approval decision.</div>
+  <div class="fine" id="fine">Answers are general information, not an approval decision.</div>
 </section>
 <script src="answers.js"></script>
 <script>
@@ -112,10 +112,21 @@ function tellHost(state){
 }
 function setFull(on){const was=document.documentElement.classList.contains("full");document.documentElement.classList.toggle("full",!!on);if(was!==!!on&&!document.getElementById("panel").classList.contains("open"))tellHost("closed")}
 if(inFrame){
-  window.addEventListener("message",e=>{if(e.source===window.parent&&e.data&&e.data.type==="dm-qa-host"){document.documentElement.classList.toggle("on-left",e.data.side==="left");document.documentElement.classList.toggle("at-top",e.data.pos==="top");setFull(e.data.mobile)}});
+  window.addEventListener("message",e=>{if(e.source===window.parent&&e.data&&e.data.type==="dm-qa-host"){if(e.data.page)hostPage=String(e.data.page).slice(0,200);document.documentElement.classList.toggle("on-left",e.data.side==="left");document.documentElement.classList.toggle("at-top",e.data.pos==="top");setFull(e.data.mobile)}});
 }else{
   const fit=()=>setFull(innerWidth<560);fit();addEventListener("resize",fit);
 }
+
+/* ---------- Question log (off unless LOG_URL is set in answers.js) ---------- */
+let hostPage=inFrame?"":location.pathname, lastLabel="";
+const visit=Math.random().toString(36).slice(2,8);
+function track(type,extra){
+  if(typeof LOG_URL==="undefined"||!LOG_URL)return;
+  const body=JSON.stringify(Object.assign({type,page:hostPage,device:document.documentElement.classList.contains("full")?"phone":"computer",visit},extra));
+  try{if(navigator.sendBeacon&&navigator.sendBeacon(LOG_URL,new Blob([body],{type:"text/plain"})))return}catch(e){}
+  try{fetch(LOG_URL,{method:"POST",mode:"no-cors",keepalive:true,headers:{"Content-Type":"text/plain"},body})}catch(e){}
+}
+if(typeof LOG_URL!=="undefined"&&LOG_URL)document.getElementById("fine").textContent+=" Questions are saved to improve our answers.";
 /* ---------- Chat UI ---------- */
 const stages=[
   {title:"Before you apply",step:"1",note:"Qualifications, fees and what to bring.",items:["How to apply","Application fee","Documents needed","Income requirements","Credit requirements","Rental & background history","Housing assistance","Pet policy","Schedule a showing"]},
@@ -125,22 +136,23 @@ const stages=[
 const panel=document.getElementById("panel"),messages=document.getElementById("messages"),inp=document.getElementById("input"),launch=document.getElementById("launch");
 if(!PREVIEW_MODE){document.getElementById("demoBar").remove()}
 const reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-function add(t,c,link){let d=document.createElement("div");d.className="msg "+c;d.textContent=t;if(link){if(t)d.appendChild(document.createElement("br"));let a=document.createElement("a");a.className="go";a.href=link.href;a.target="_blank";a.rel="noopener";a.textContent=link.text;d.appendChild(a)}messages.appendChild(d);messages.scrollTop=messages.scrollHeight;return d}
-function ask(q){
+function add(t,c,link){let d=document.createElement("div");d.className="msg "+c;d.textContent=t;if(link){if(t)d.appendChild(document.createElement("br"));let a=document.createElement("a");a.className="go";a.href=link.href;a.target="_blank";a.rel="noopener";a.textContent=link.text;a.addEventListener("click",()=>track("link",{link:link.href,answer:lastLabel}));d.appendChild(a)}messages.appendChild(d);messages.scrollTop=messages.scrollHeight;return d}
+function ask(q,source){
   add(q,"user");const m=findMatch(q);
+  track(source==="button"?"button":"question",{question:q,answer:m?m.label:""});lastLabel=m?m.label:"";
   const t=document.createElement("div");t.className="msg bot typing";t.innerHTML="<i></i><i></i><i></i>";t.setAttribute("aria-label","Typing");messages.appendChild(t);messages.scrollTop=messages.scrollHeight;
   const asked=messages.lastElementChild.previousElementSibling;
   setTimeout(()=>{t.remove();m?add(m.answer,"bot",m.link):add(FALLBACK,"bot");
     if(asked)messages.scrollTop=Math.max(0,asked.offsetTop-messages.offsetTop-8)},reduce?0:450);
 }
-function openPanel(){tellHost("open");panel.classList.add("open");launch.setAttribute("aria-expanded","true");if(!messages.children.length)add("Hi! Ask me anything about renting with Desirable Management, or tap a common question below.","bot")}
+function openPanel(){tellHost("open");track("open",{});panel.classList.add("open");launch.setAttribute("aria-expanded","true");if(!messages.children.length)add("Hi! Ask me anything about renting with Desirable Management, or tap a common question below.","bot")}
 function closePanel(){panel.classList.remove("open");launch.setAttribute("aria-expanded","false");tellHost("closed");launch.focus()}
 launch.onclick=()=>{panel.classList.contains("open")?closePanel():(openPanel(),setTimeout(()=>inp.focus(),80))};
 document.getElementById("close").onclick=closePanel;
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&panel.classList.contains("open"))closePanel()});
 document.getElementById("form").onsubmit=e=>{e.preventDefault();let q=inp.value.trim();if(q){inp.value="";ask(q)}};
 
-for(const name of popular){let b=document.createElement("button");b.className="chip";b.type="button";b.textContent=name;b.onclick=()=>ask(name);document.getElementById("chips").appendChild(b)}
+for(const name of popular){let b=document.createElement("button");b.className="chip";b.type="button";b.textContent=name;b.onclick=()=>ask(name,"button");document.getElementById("chips").appendChild(b)}
 const ready=()=>tellHost(panel.classList.contains("open")?"open":"closed");
 (document.fonts?document.fonts.ready:Promise.resolve()).then(ready);ready();
 </script>

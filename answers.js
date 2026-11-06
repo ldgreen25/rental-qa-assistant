@@ -7,6 +7,9 @@
    PREVIEW_MODE=true to show the "pending review" labels again.
 ---------------------------------------------------------------- */
 const PREVIEW_MODE=false;
+/* Question log: paste the Google Apps Script web app link here to save each
+   question to Lakesha's Google Sheet. Leave empty to turn logging off. */
+const LOG_URL="";
 const OFFICE="(757) 806-4593";
 const EMERGENCY="(757) 806-4593, ext. 2";
 const EMAIL="Yesrent2me@gmail.com";

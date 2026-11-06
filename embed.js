@@ -103,7 +103,7 @@
       return { side: side, lift: Math.max(0, used[side] - 8) };
     }
     function tellFrame() {
-      if (f.contentWindow) f.contentWindow.postMessage({ type: "dm-qa-host", mobile: mobile(), side: side, pos: POS }, origin);
+      if (f.contentWindow) f.contentWindow.postMessage({ type: "dm-qa-host", mobile: mobile(), side: side, pos: POS, page: location.pathname }, origin);
     }
 
     window.addEventListener("message", function (e) {
