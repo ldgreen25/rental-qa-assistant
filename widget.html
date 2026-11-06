@@ -54,6 +54,22 @@ html,body{margin:0;background:transparent;font-family:var(--body);color:var(--in
 html.full .panel{inset:0;width:auto;height:auto;border-radius:0;border:0}
 html.full .launch{right:auto;left:12px;bottom:12px;padding:8px 13px 8px 11px;gap:7px;font-size:13px;border-width:1.5px;box-shadow:0 6px 16px rgba(15,36,57,.22)}
 html.full .launch svg{width:16px;height:16px}
+html.full .head{padding:12px 12px 12px 14px;gap:10px}
+html.full .head-id{gap:10px;min-width:0}
+html.full .head-mark{width:30px;height:30px;border-radius:8px}
+html.full .head-mark svg{width:16px;height:16px}
+html.full .head h2{font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html.full .head p{font-size:12px}
+html.full .close{width:30px;height:30px;font-size:20px;flex:none}
+html.full .messages{padding:12px}
+html.full .msg{font-size:14px;max-width:92%;padding:10px 12px;margin:6px 0}
+html.full .popular{padding:8px 10px;gap:5px;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,#000 85%,transparent);mask-image:linear-gradient(90deg,#000 85%,transparent)}
+html.full .popular::-webkit-scrollbar{display:none}
+html.full .chip{font-size:12px;padding:6px 10px}
+html.full #form{padding:8px 10px 10px}
+html.full #input{padding:10px 11px}
+html.full .send{padding:0 13px;font-size:14px}
+html.full .fine{font-size:10px;padding:0 12px 9px}
 html.full .launch[aria-expanded="true"]{visibility:hidden}
 @media(prefers-reduced-motion:reduce){.panel.open{animation:none}.typing i{animation:none;opacity:.7}}
 </style>
@@ -88,7 +104,7 @@ function tellHost(state){
   if(state==="closed"){const r=document.getElementById("launch").getBoundingClientRect();msg.w=Math.ceil(r.width)+44;msg.h=Math.ceil(r.height)+44}
   window.parent.postMessage(msg,"*");
 }
-function setFull(on){document.documentElement.classList.toggle("full",!!on)}
+function setFull(on){const was=document.documentElement.classList.contains("full");document.documentElement.classList.toggle("full",!!on);if(was!==!!on&&!document.getElementById("panel").classList.contains("open"))tellHost("closed")}
 if(inFrame){
   window.addEventListener("message",e=>{if(e.source===window.parent&&e.data&&e.data.type==="dm-qa-host")setFull(e.data.mobile)});
 }else{
@@ -107,7 +123,9 @@ function add(t,c,link){let d=document.createElement("div");d.className="msg "+c;
 function ask(q){
   add(q,"user");const m=findMatch(q);
   const t=document.createElement("div");t.className="msg bot typing";t.innerHTML="<i></i><i></i><i></i>";t.setAttribute("aria-label","Typing");messages.appendChild(t);messages.scrollTop=messages.scrollHeight;
-  setTimeout(()=>{t.remove();m?add(m.answer,"bot",m.link):add(FALLBACK,"bot")},reduce?0:450);
+  const asked=messages.lastElementChild.previousElementSibling;
+  setTimeout(()=>{t.remove();m?add(m.answer,"bot",m.link):add(FALLBACK,"bot");
+    if(asked)messages.scrollTop=Math.max(0,asked.offsetTop-messages.offsetTop-8)},reduce?0:450);
 }
 function openPanel(){tellHost("open");panel.classList.add("open");launch.setAttribute("aria-expanded","true");if(!messages.children.length)add("Hi! Ask me anything about renting with Desirable Management, or tap a common question below.","bot")}
 function closePanel(){panel.classList.remove("open");launch.setAttribute("aria-expanded","false");tellHost("closed");launch.focus()}
