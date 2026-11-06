@@ -125,7 +125,7 @@ const stages=[
 const panel=document.getElementById("panel"),messages=document.getElementById("messages"),inp=document.getElementById("input"),launch=document.getElementById("launch");
 if(!PREVIEW_MODE){document.getElementById("demoBar").remove()}
 const reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-function add(t,c,link){let d=document.createElement("div");d.className="msg "+c;d.textContent=t;if(link){d.appendChild(document.createElement("br"));let a=document.createElement("a");a.className="go";a.href=link.href;a.target="_blank";a.rel="noopener";a.textContent=link.text;d.appendChild(a)}messages.appendChild(d);messages.scrollTop=messages.scrollHeight;return d}
+function add(t,c,link){let d=document.createElement("div");d.className="msg "+c;d.textContent=t;if(link){if(t)d.appendChild(document.createElement("br"));let a=document.createElement("a");a.className="go";a.href=link.href;a.target="_blank";a.rel="noopener";a.textContent=link.text;d.appendChild(a)}messages.appendChild(d);messages.scrollTop=messages.scrollHeight;return d}
 function ask(q){
   add(q,"user");const m=findMatch(q);
   const t=document.createElement("div");t.className="msg bot typing";t.innerHTML="<i></i><i></i><i></i>";t.setAttribute("aria-label","Typing");messages.appendChild(t);messages.scrollTop=messages.scrollHeight;
