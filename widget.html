@@ -55,6 +55,10 @@ html.full .panel{inset:0;width:auto;height:auto;border-radius:0;border:0}
 html.full .launch{right:12px;left:auto;bottom:12px;padding:8px 13px 8px 11px;gap:7px;font-size:13px;border-width:1.5px;box-shadow:0 6px 16px rgba(15,36,57,.22)}
 html.full .launch svg{width:16px;height:16px}
 html.on-left .launch{left:12px;right:auto}
+html.at-top .launch{top:14px;bottom:auto}
+html.at-top .panel{top:78px;bottom:auto;height:min(620px,calc(100vh - 92px))}
+html.full.at-top .launch{top:8px}
+html.full.at-top .panel{top:0;bottom:0;height:auto}
 html.on-left:not(.full) .launch{left:22px}
 html.full .head{padding:12px 12px 12px 14px;gap:10px}
 html.full .head-id{gap:10px;min-width:0}
@@ -79,7 +83,7 @@ html.full .launch[aria-expanded="true"]{visibility:hidden}
 <body>
 <button class="launch" id="launch" aria-controls="panel" aria-expanded="false">
   <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg>
-  Ask a question
+  How can I help you?
 </button>
 
 <section class="panel" id="panel" role="dialog" aria-label="Desirable Management rental questions">
@@ -108,7 +112,7 @@ function tellHost(state){
 }
 function setFull(on){const was=document.documentElement.classList.contains("full");document.documentElement.classList.toggle("full",!!on);if(was!==!!on&&!document.getElementById("panel").classList.contains("open"))tellHost("closed")}
 if(inFrame){
-  window.addEventListener("message",e=>{if(e.source===window.parent&&e.data&&e.data.type==="dm-qa-host"){document.documentElement.classList.toggle("on-left",e.data.side==="left");setFull(e.data.mobile)}});
+  window.addEventListener("message",e=>{if(e.source===window.parent&&e.data&&e.data.type==="dm-qa-host"){document.documentElement.classList.toggle("on-left",e.data.side==="left");document.documentElement.classList.toggle("at-top",e.data.pos==="top");setFull(e.data.mobile)}});
 }else{
   const fit=()=>setFull(innerWidth<560);fit();addEventListener("resize",fit);
 }

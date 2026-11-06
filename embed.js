@@ -2,8 +2,9 @@
    Add this one line to any website (Wix: Settings > Custom Code, Body - end, All pages):
    <script src="https://ldgreen25.github.io/rental-qa-assistant/embed.js" defer></script>
 
-   It places the "Rental questions" button in the bottom-right corner. The box runs
-   inside its own frame, so it can't change or be broken by the host site's styles. */
+   It places the "How can I help you?" button at the top-right, just below the site's
+   menu (add data-position="bottom" to the script tag to use a bottom corner instead).
+   The box runs inside its own frame, so it can't change or be broken by the host site. */
 (function () {
   if (window.__dmRentalQA) return;
   window.__dmRentalQA = true;
@@ -17,6 +18,8 @@
 
   var PHONE = 560;               // below this width the box opens full screen
   var closedW = 260, closedH = 100, isOpen = false, side = "right";
+  var POS = (me && me.getAttribute("data-position")) === "bottom" ? "bottom" : "top";
+  var topGap = 0;
 
   function start() {
     var f = document.createElement("iframe");
@@ -34,6 +37,14 @@
     function mobile() { return window.innerWidth < PHONE; }
     function size(frame) {
       var st = frame.style;
+      if (POS === "top") {
+        if (!isOpen) topGap = headerClearance();
+        side = "right";
+        if (isOpen && mobile()) { st.width = "100vw"; st.height = "100%"; st.top = "0"; st.bottom = "auto"; st.left = "0"; st.right = "auto"; }
+        else if (isOpen) { st.width = "430px"; st.height = Math.min(730, window.innerHeight - topGap) + "px"; st.top = topGap + "px"; st.bottom = "auto"; st.left = "auto"; st.right = "0"; }
+        else { st.width = closedW + "px"; st.height = closedH + "px"; st.top = topGap + "px"; st.bottom = "auto"; st.left = "auto"; st.right = "0"; }
+        return;
+      }
       if (isOpen && mobile()) { st.width = "100vw"; st.height = "100%"; st.top = "0"; }
       else if (isOpen) { st.width = "430px"; st.height = Math.min(730, window.innerHeight) + "px"; st.top = "auto"; }
       else { st.width = closedW + "px"; st.height = closedH + "px"; st.top = "auto"; }
@@ -48,6 +59,22 @@
         st.bottom = spot.lift + "px";
         if (spot.side === "left") { st.left = "0"; st.right = "auto"; } else { st.left = "auto"; st.right = "0"; }
       }
+    }
+    // Top-right placement: stay below the site's menu, links and buttons in that corner.
+    function headerClearance() {
+      var w = window.innerWidth, low = 0;
+      var els = document.body.querySelectorAll('a,button,input,select,[role="button"],[role="link"],[role="navigation"],nav,[aria-haspopup],[aria-label*="menu" i]');
+      for (var i = 0; i < els.length; i++) {
+        var el = els[i];
+        if (el === f || f.contains && el.contains(f)) continue;
+        var r = el.getBoundingClientRect();
+        if (r.width < 8 || r.height < 8 || r.width > w * 0.95) continue;
+        if (r.top > 200 || r.bottom <= 0 || r.right < w * 0.55) continue;
+        var cs = window.getComputedStyle(el);
+        if (cs.visibility === "hidden" || cs.display === "none" || cs.opacity === "0") continue;
+        low = Math.max(low, r.bottom);
+      }
+      return Math.min(220, Math.max(0, Math.ceil(low) + 2));
     }
     // Find other fixed buttons near the bottom corners of the page.
     function cornerUsage() {
@@ -76,7 +103,7 @@
       return { side: side, lift: Math.max(0, used[side] - 8) };
     }
     function tellFrame() {
-      if (f.contentWindow) f.contentWindow.postMessage({ type: "dm-qa-host", mobile: mobile(), side: side }, origin);
+      if (f.contentWindow) f.contentWindow.postMessage({ type: "dm-qa-host", mobile: mobile(), side: side, pos: POS }, origin);
     }
 
     window.addEventListener("message", function (e) {
