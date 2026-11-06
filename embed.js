@@ -37,6 +37,9 @@
       if (isOpen && mobile()) { st.width = "100vw"; st.height = "100%"; st.top = "0"; }
       else if (isOpen) { st.width = "430px"; st.height = Math.min(730, window.innerHeight) + "px"; st.top = "auto"; }
       else { st.width = closedW + "px"; st.height = closedH + "px"; st.top = "auto"; }
+      // On phones, Wix puts its own buttons in the bottom-right, so sit bottom-left when closed.
+      if (!isOpen && mobile()) { st.left = "0"; st.right = "auto"; }
+      else { st.left = isOpen && mobile() ? "0" : "auto"; st.right = "0"; }
     }
     function tellFrame() {
       if (f.contentWindow) f.contentWindow.postMessage({ type: "dm-qa-host", mobile: mobile() }, origin);
