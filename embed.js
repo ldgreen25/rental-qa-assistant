@@ -2,8 +2,8 @@
    Add this one line to any website (Wix: Settings > Custom Code, Body - end, All pages):
    <script src="https://ldgreen25.github.io/rental-qa-assistant/embed.js" defer></script>
 
-   It places the "How may I help you?" button at the top-right, just below the site's
-   menu (add data-position="bottom" to the script tag to use a bottom corner instead).
+   It places the "How may I help you?" button in a free bottom corner, out of the way of
+   the site's own floating buttons (add data-position="top" for top-right, below the menu).
    The box runs inside its own frame, so it can't change or be broken by the host site. */
 (function () {
   if (window.__dmRentalQA) return;
@@ -18,7 +18,7 @@
 
   var PHONE = 560;               // below this width the box opens full screen
   var closedW = 260, closedH = 100, isOpen = false, side = "right";
-  var POS = (me && me.getAttribute("data-position")) === "bottom" ? "bottom" : "top";
+  var POS = (me && me.getAttribute("data-position")) === "top" ? "top" : "bottom";
   var topGap = 0;
 
   function start() {
