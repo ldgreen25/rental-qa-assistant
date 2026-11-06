@@ -56,7 +56,12 @@ const cases = [
   ["Is there a waiting list?", "Available rentals"],
   ["I want you to manage my property", "Property owners"],
   ["What's your address?", "Contact us"],
-  ["How long is the lease?", null],
+  ["How long is the lease?", "Lease length"],
+  ["Is it a one year lease?", "Lease length"],
+  ["When is the late fee charged?", "Paying rent"],
+  ["Who do I call after hours for an emergency?", "Maintenance requests"],
+  ["Does the holding fee go toward my deposit?", "Deposit / move-in costs"],
+  ["What is the minimum credit score?", "Credit requirements"],
 
   // Popular-question buttons must answer themselves
   ...["How to apply","Application fee","Income requirements","Credit requirements","Housing assistance","Pet policy",

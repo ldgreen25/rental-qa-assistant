@@ -169,13 +169,12 @@ footer strong{color:var(--ink)}
 <script>
 /* ---------------------------------------------------------------
    PREVIEW MODE
-   Answers are drawn from Desirable Management's website
-   (shedoesitall.net) as of Oct 2026, pending the owner's review.
-   Once she approves the wording, set PREVIEW_MODE=false to hide the
-   preview labels.
+   Answers confirmed by Desirable Management (Nov 2026). Set
+   PREVIEW_MODE=true to show the "pending review" labels again.
 ---------------------------------------------------------------- */
-const PREVIEW_MODE=true;
+const PREVIEW_MODE=false;
 const OFFICE="(757) 806-4593";
+const EMERGENCY="(757) 806-4593, ext. 2";
 const EMAIL="Yesrent2me@gmail.com";
 const LINKS={
   rentals:"https://showmojo.com/ef0519201a/l",
@@ -202,9 +201,9 @@ const data=[
 {label:"Income requirements",keys:["income requirement","income","salary","how much do i need to make","make","earn","wages","job","employment","employed","self employed"],
  answer:"Your household's combined net (take-home) income should be at least 2 times the monthly rent. Income from all adult applicants is combined.\n\nYou'll also need to have been at your current job for more than 3 months, unless you've transferred within your company. Self-employed applicants can qualify with six months of bank statements."},
 {label:"Credit requirements",keys:["credit requirement","credit score","credit","fico","bad credit","no credit","co signer","cosigner","guarantor"],
- answer:"We look for a credit score of 580 or higher. Applicants at or below 580 may still be considered with additional conditions.\n\nIf you don't have established credit or rental history, a co-signer may be considered. Co-signers need a credit score of at least 700."},
+ answer:"A credit score of at least 580 is required.\n\nIf you don't have established credit or rental history, a co-signer may be considered. Co-signers need a credit score of at least 700."},
 {label:"Rental & background history",keys:["eviction","evictions","background check","background","criminal","felony","bankruptcy","judgment","rental history","landlord reference"],
- answer:"We look for good, verifiable rental history, or proof that you previously owned your home. Applications are also screened for:\n• Evictions, judgments or garnishments in recent years\n• Bankruptcy within the last 3 years\n• Convictions within the last 5 years related to drugs, violent crimes or firearms",
+ answer:"We look for good, verifiable rental history, or proof that you previously owned your home. Applications are also screened for:\n• Evictions within the last 3 years\n• Judgments or garnishments\n• Bankruptcy within the last 3 years\n• Convictions within the last 5 years related to drugs, violent crimes or firearms",
  link:{text:"See full rental qualifications",href:LINKS.qualifications}},
 {label:"Housing assistance",keys:["section 8","voucher","housing choice","housing assistance","rental assistance","hcv"],
  answer:"Yes, housing assistance is accepted. Applicants using assistance are screened by the same criteria as everyone else. Please call us at "+OFFICE+" with any questions about using your voucher with a specific home."},
@@ -212,7 +211,7 @@ const data=[
  answer:"Pets are screened through PetScreening, a third-party service. The pet application fee is $20 for the first pet and $15 for the second. Service animals and emotional support animals are screened for free.\n\nApproved pets may have pet rent, a pet deposit and a pet acceptance fee, based on the pet's age, weight and breed, owner approval and its FIDO score.",
  link:{text:"Start a pet application",href:LINKS.pets}},
 {label:"Deposit / move-in costs",keys:["security deposit","deposit","move in cost","move in","holding fee","upfront","first month","prorated"],
- answer:"After approval, here's what to expect:\n• A holding fee is due within 24 hours of approval to hold the home.\n• Your lease must be signed and returned within 72 hours.\n• A security deposit and your first month's prorated rent are due before move-in.\n• Move-in is within 30 days of approval or of the home becoming available, whichever is later.\n\nIf you don't sign the lease or move in, the holding fee is forfeited. Move-in funds are paid online, and self check-in is available on move-in day."},
+ answer:"The security deposit is one month's rent. Here's how move-in works after approval:\n• A holding fee equal to one month's rent is due within 24 hours of approval to hold the home. It becomes your security deposit when you move in.\n• Your lease must be signed and returned within 72 hours.\n• Your first month's rent, prorated if you move in mid-month, is due before move-in.\n• Move-in is within 30 days of approval or of the home becoming available, whichever is later.\n\nIf you don't sign the lease or move in, the holding fee is forfeited. Move-in funds are paid online, and self check-in is available on move-in day."},
 {label:"Schedule a showing",keys:["schedule a showing","showing","tour","view property","see property","see the house","walk through","visit"],
  answer:"You can request a showing for any home directly from its listing on our available rentals page.",
  link:{text:"View rentals and schedule",href:LINKS.rentals}},
@@ -222,8 +221,10 @@ const data=[
 {label:"Service area",keys:["service area","what areas","which cities","where are your homes","location","hampton","newport news","norfolk","virginia beach","chesapeake","williamsburg","yorktown","portsmouth","carrollton","isle of wight"],
  answer:"We manage homes across Hampton Roads, including Hampton, Newport News, Williamsburg, Yorktown, Norfolk, Portsmouth, Chesapeake, Virginia Beach, Carrollton and Isle of Wight."},
 {label:"Paying rent",keys:["pay rent","how much is rent","rent price","monthly rent","rent","payment","due date","late fee","cash","portal"],
- answer:"Rent varies by home and is shown on each listing. Residents pay rent online through the resident portal, which is available 24/7. Local cash-payment options are also available.\n\nFor questions about due dates or late fees, call the office at "+OFFICE+".",
+ answer:"Rent varies by home and is shown on each listing. Rent is due on the 3rd of each month, and rent received after the 3rd is late and a late fee applies.\n\nResidents pay rent online through the resident portal, which is available 24/7. Local cash-payment options are also available."+OFFICE+".",
  link:{text:"Resident portal",href:LINKS.portal}},
+{label:"Lease length",keys:["lease length","how long is the lease","lease term","lease","month to month","year lease","12 month"],
+ answer:"Our standard lease term is one year (12 months)."},
 {label:"Renters insurance",keys:["renters insurance","renter insurance","insurance"],
  answer:"Renters insurance is required for the full term of your lease."},
 {label:"Utilities",keys:["utilities","utility","electric","water","gas","trash","sewer","internet","cable"],
@@ -231,8 +232,8 @@ const data=[
 {label:"Resident Benefit Package",keys:["resident benefit package","benefit package","benefits","credit building","rent reporting"],
  answer:"Every lease includes our Resident Benefit Package, starting at $15 per month, which is billed with your rent. It includes:\n• A 24/7 online resident portal\n• Positive rent reporting to help build your credit\n• A 24/7 emergency maintenance hotline and priority maintenance\n• Routine property check-ins and help with renewals and move-outs",
  link:{text:"Learn more",href:LINKS.benefits}},
-{label:"Maintenance requests",keys:["maintenance request","maintenance","repair","broken","leak","work order","emergency"],
- answer:"Current residents can submit maintenance requests anytime through the resident portal. Requests are tracked so you can follow their status, and we respond within 24–48 business hours.\n\nFor after-hours emergencies, use the emergency maintenance hotline. If you smell gas or there is a fire, leave the home and call 911 first.",
+{label:"Maintenance requests",keys:["maintenance request","maintenance","repair","broken","leak","work order","emergency","after hours","after-hours"],
+ answer:"Current residents can submit maintenance requests anytime through the resident portal. Requests are tracked so you can follow their status, and we respond within 24–48 business hours.\n\nFor after-hours emergencies, call "+EMERGENCY+". If you smell gas or there is a fire, leave the home and call 911 first.",
  link:{text:"Submit a request",href:LINKS.portal}},
 {label:"Property owners",keys:["property owner","owner","manage my property","management services","rent my house","landlord services","rental analysis"],
  answer:"We manage single-family homes, multi-family properties, apartments and commercial space. Owners can schedule a free consultation to review rent strategy, expenses and liability.",
@@ -265,7 +266,7 @@ function findMatch(text){
 /* ---------- Chat UI ---------- */
 const stages=[
   {title:"Before you apply",step:"1",note:"Qualifications, fees and what to bring.",items:["How to apply","Application fee","Documents needed","Income requirements","Credit requirements","Rental & background history","Housing assistance","Pet policy","Schedule a showing"]},
-  {title:"After approval",step:"2",note:"Holding your home and getting the keys.",items:["Approval time","Deposit / move-in costs","Renters insurance","Utilities"]},
+  {title:"After approval",step:"2",note:"Holding your home and getting the keys.",items:["Approval time","Deposit / move-in costs","Lease length","Renters insurance","Utilities"]},
   {title:"Living here",step:"3",note:"Rent, repairs and resident perks.",items:["Paying rent","Maintenance requests","Resident Benefit Package","Contact us"]}
 ];
 const panel=document.getElementById("panel"),messages=document.getElementById("messages"),inp=document.getElementById("input"),launch=document.getElementById("launch");
