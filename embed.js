@@ -2,7 +2,7 @@
    Add this one line to any website (Wix: Settings > Custom Code, Body - end, All pages):
    <script src="https://ldgreen25.github.io/rental-qa-assistant/embed.js" defer></script>
 
-   It places the "How can I help you?" button at the top-right, just below the site's
+   It places the "How may I help you?" button at the top-right, just below the site's
    menu (add data-position="bottom" to the script tag to use a bottom corner instead).
    The box runs inside its own frame, so it can't change or be broken by the host site. */
 (function () {
