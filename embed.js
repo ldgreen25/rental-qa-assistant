@@ -16,7 +16,7 @@
   try { origin = new URL(base).origin; } catch (e) { base = DEFAULT.replace("embed.js", ""); origin = new URL(base).origin; }
 
   var PHONE = 560;               // below this width the box opens full screen
-  var closedW = 260, closedH = 100, isOpen = false;
+  var closedW = 260, closedH = 100, isOpen = false, side = "right";
 
   function start() {
     var f = document.createElement("iframe");
@@ -28,8 +28,8 @@
     s.position = "fixed"; s.right = "0"; s.bottom = "0"; s.border = "0";
     s.margin = "0"; s.padding = "0"; s.zIndex = "2147483000";
     s.background = "transparent"; s.colorScheme = "normal"; s.maxWidth = "100vw"; s.maxHeight = "100vh";
-    size(f);
     document.body.appendChild(f);
+    size(f);
 
     function mobile() { return window.innerWidth < PHONE; }
     function size(frame) {
@@ -37,12 +37,46 @@
       if (isOpen && mobile()) { st.width = "100vw"; st.height = "100%"; st.top = "0"; }
       else if (isOpen) { st.width = "430px"; st.height = Math.min(730, window.innerHeight) + "px"; st.top = "auto"; }
       else { st.width = closedW + "px"; st.height = closedH + "px"; st.top = "auto"; }
-      // On phones, Wix puts its own buttons in the bottom-right, so sit bottom-left when closed.
-      if (!isOpen && mobile()) { st.left = "0"; st.right = "auto"; }
-      else { st.left = isOpen && mobile() ? "0" : "auto"; st.right = "0"; }
+      // When closed, sit in a corner that the site's own floating buttons
+      // (Wix chat, quick actions, back-to-top) aren't using.
+      if (isOpen) {
+        st.bottom = "0";
+        if (mobile()) { st.left = "0"; st.right = "auto"; } else { st.left = "auto"; st.right = "0"; }
+      } else {
+        var spot = pickSpot();
+        side = spot.side;
+        st.bottom = spot.lift + "px";
+        if (spot.side === "left") { st.left = "0"; st.right = "auto"; } else { st.left = "auto"; st.right = "0"; }
+      }
+    }
+    // Find other fixed buttons near the bottom corners of the page.
+    function cornerUsage() {
+      var used = { left: 0, right: 0 }, w = window.innerWidth, h = window.innerHeight;
+      var all = document.body ? document.body.getElementsByTagName("*") : [];
+      for (var i = 0; i < all.length; i++) {
+        var el = all[i];
+        if (el === f || el.contains(f)) continue;
+        var r = el.getBoundingClientRect();
+        if (r.width < 24 || r.height < 24 || r.width > w * 0.6 || r.height > 220) continue;
+        if (r.bottom < h - 200 || r.top > h) continue;
+        var cs = window.getComputedStyle(el);
+        if (cs.position !== "fixed" || cs.visibility === "hidden" || cs.display === "none" || cs.opacity === "0") continue;
+        var lift = Math.ceil(h - r.top) + 4;
+        if (r.left + r.width / 2 < w / 2) used.left = Math.max(used.left, lift);
+        else used.right = Math.max(used.right, lift);
+      }
+      return used;
+    }
+    function pickSpot() {
+      var used = cornerUsage();
+      var prefer = mobile() ? ["left", "right"] : ["right", "left"];
+      for (var i = 0; i < prefer.length; i++) if (!used[prefer[i]]) return { side: prefer[i], lift: 0 };
+      // Both corners taken: stack above the shorter pile.
+      var side = used.left <= used.right ? "left" : "right";
+      return { side: side, lift: Math.max(0, used[side] - 8) };
     }
     function tellFrame() {
-      if (f.contentWindow) f.contentWindow.postMessage({ type: "dm-qa-host", mobile: mobile() }, origin);
+      if (f.contentWindow) f.contentWindow.postMessage({ type: "dm-qa-host", mobile: mobile(), side: side }, origin);
     }
 
     window.addEventListener("message", function (e) {
@@ -59,6 +93,7 @@
     });
     f.addEventListener("load", tellFrame);
     window.addEventListener("resize", function () { size(f); tellFrame(); });
+    [1500, 4000, 9000].forEach(function (ms) { setTimeout(function () { if (!isOpen) { size(f); tellFrame(); } }, ms); });
   }
 
   if (document.body) start();

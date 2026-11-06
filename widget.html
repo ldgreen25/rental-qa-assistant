@@ -52,8 +52,10 @@ html,body{margin:0;background:transparent;font-family:var(--body);color:var(--in
 .fine{text-align:center;padding:0 14px 12px;color:var(--muted);font-size:11px;background:var(--paper)}
 /* Phone: the box fills the screen */
 html.full .panel{inset:0;width:auto;height:auto;border-radius:0;border:0}
-html.full .launch{right:auto;left:12px;bottom:12px;padding:8px 13px 8px 11px;gap:7px;font-size:13px;border-width:1.5px;box-shadow:0 6px 16px rgba(15,36,57,.22)}
+html.full .launch{right:12px;left:auto;bottom:12px;padding:8px 13px 8px 11px;gap:7px;font-size:13px;border-width:1.5px;box-shadow:0 6px 16px rgba(15,36,57,.22)}
 html.full .launch svg{width:16px;height:16px}
+html.on-left .launch{left:12px;right:auto}
+html.on-left:not(.full) .launch{left:22px}
 html.full .head{padding:12px 12px 12px 14px;gap:10px}
 html.full .head-id{gap:10px;min-width:0}
 html.full .head-mark{width:30px;height:30px;border-radius:8px}
@@ -106,7 +108,7 @@ function tellHost(state){
 }
 function setFull(on){const was=document.documentElement.classList.contains("full");document.documentElement.classList.toggle("full",!!on);if(was!==!!on&&!document.getElementById("panel").classList.contains("open"))tellHost("closed")}
 if(inFrame){
-  window.addEventListener("message",e=>{if(e.source===window.parent&&e.data&&e.data.type==="dm-qa-host")setFull(e.data.mobile)});
+  window.addEventListener("message",e=>{if(e.source===window.parent&&e.data&&e.data.type==="dm-qa-host"){document.documentElement.classList.toggle("on-left",e.data.side==="left");setFull(e.data.mobile)}});
 }else{
   const fit=()=>setFull(innerWidth<560);fit();addEventListener("resize",fit);
 }
