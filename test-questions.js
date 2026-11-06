@@ -4,9 +4,7 @@
 // Use null when the bot should NOT answer and should send people to the office instead.
 
 const fs = require("fs");
-const html = fs.readFileSync(__dirname + "/index.html", "utf8");
-const script = html.match(/<script>([\s\S]*?)<\/script>/)[1];
-const logic = script.split("/* ---------- Chat UI")[0];
+const logic = fs.readFileSync(__dirname + "/answers.js", "utf8");
 const findMatch = new Function(logic + "; return findMatch;")();
 
 const cases = [
@@ -23,6 +21,11 @@ const cases = [
   ["How much do I need to make", "Income requirements"],
   ["What credit score do I need?", "Credit requirements"],
   ["I have bad credit, can I use a cosigner?", "Credit requirements"],
+  ["Do you accept co-signers?", "Credit requirements"],
+  ["Are there fees to pay by echeck?", "Paying rent"],
+  ["Can I pay with a personal check?", "Paying rent"],
+  ["The house says coming soon, can I see it?", "Schedule a showing"],
+  ["Do you allow pets?", "Pet policy"],
   ["Do you allow cats?", "Pet policy"],
   ["Is it pet friendly?", "Pet policy"],
   ["Can I bring my dogs", "Pet policy"],
